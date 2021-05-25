@@ -38,6 +38,10 @@ function menu() {
           getAllEmployees();
           break;
         }
+        case "View all employees by department": {
+          getDepartment();
+          break;
+        }
 
         case "exit": {
           connection.end();
@@ -48,12 +52,57 @@ function menu() {
 }
 
 const getAllEmployees = () => {
-  connection.query("SELECT * FROM employee", (err, res) => {
-    if (err) throw err;
-    // Log all results of the SELECT statement
-    console.table(res);
-    menu();
-  });
+  //query for all rows in employee table
+  connection.query(
+    "SELECT * FROM employee JOIN role ON employee.role_id = role.id JOIN department ON department.id = role.department_id",
+    (err, res) => {
+      if (err) throw err;
+      // Log all results of the SELECT statement in a table
+      console.table(res);
+      //returns user to main menu
+      menu();
+    }
+  );
+};
+
+const getDepartment = () => {
+  inquirer
+    .prompt({
+      type: "list",
+      message: "Which department?",
+      choices: ["Legal", "Finance", "IT", "Sales"],
+      name: "departments",
+    })
+    .then((res) => {
+      switch (res.departments) {
+        case "Legal": {
+          connection.query(
+            //select all employees where role id is 1 or 2 which are members of the Legal department
+            "SELECT * FROM employee WHERE role_id = 1 OR role_id = 2",
+            (err, res) => {
+              if (err) throw err;
+              // Log all results of the SELECT statement in a table
+              console.table(res);
+              //returns user to main menu
+              menu();
+            }
+          );
+          break;
+        }
+        // case "Finance": {
+        //   getDepartment();
+        //   break;
+        // }
+        // case "IT": {
+        //   getDepartment();
+        //   break;
+        // }
+        // case "Sales": {
+        //   getDepartment();
+        //   break;
+        // }
+      }
+    });
 };
 
 connection.connect((err) => {
