@@ -78,7 +78,7 @@ const getDepartment = () => {
         case "Legal": {
           connection.query(
             //select all employees where role id is 1 or 2 which are members of the Legal department
-            "SELECT * FROM employee WHERE role_id = 1 OR role_id = 2",
+            "SELECT * FROM employee JOIN role ON employee.role_id = role.id JOIN department ON department.id = role.department_id WHERE role_id = 1 OR role_id = 2",
             (err, res) => {
               if (err) throw err;
               // Log all results of the SELECT statement in a table
@@ -89,18 +89,48 @@ const getDepartment = () => {
           );
           break;
         }
-        // case "Finance": {
-        //   getDepartment();
-        //   break;
-        // }
-        // case "IT": {
-        //   getDepartment();
-        //   break;
-        // }
-        // case "Sales": {
-        //   getDepartment();
-        //   break;
-        // }
+        case "Finance": {
+          connection.query(
+            //select all employees where role id is 1 or 2 which are members of the Legal department
+            "SELECT * FROM employee JOIN role ON employee.role_id = role.id JOIN department ON department.id = role.department_id WHERE role_id = 3 OR role_id = 4",
+            (err, res) => {
+              if (err) throw err;
+              // Log all results of the SELECT statement in a table
+              console.table(res);
+              //returns user to main menu
+              menu();
+            }
+          );
+          break;
+        }
+        case "IT": {
+          connection.query(
+            //select all employees where role id is 1 or 2 which are members of the Legal department
+            "SELECT * FROM employee JOIN role ON employee.role_id = role.id JOIN department ON department.id = role.department_id WHERE role_id = 5",
+            (err, res) => {
+              if (err) throw err;
+              // Log all results of the SELECT statement in a table
+              console.table(res);
+              //returns user to main menu
+              menu();
+            }
+          );
+          break;
+        }
+        case "Sales": {
+          connection.query(
+            //select all employees where role id is 1 or 2 which are members of the Legal department
+            "SELECT * FROM employee JOIN role ON employee.role_id = role.id JOIN department ON department.id = role.department_id WHERE role_id = 6 OR role_id = 7",
+            (err, res) => {
+              if (err) throw err;
+              // Log all results of the SELECT statement in a table
+              console.table(res);
+              //returns user to main menu
+              menu();
+            }
+          );
+          break;
+        }
       }
     });
 };
