@@ -4,8 +4,6 @@ const Choice = require("inquirer/lib/objects/choice");
 require("dotenv").config();
 const cTable = require("console.table");
 
-const managerArray = [];
-
 const connection = mysql.createConnection({
   host: "localhost",
   port: 3306,
@@ -403,6 +401,31 @@ const addDepartment = () => {
           if (err) throw err;
           console.log("New department added!");
           menu();
+        }
+      );
+    });
+};
+
+const updateRole = () => {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "What is their employee ID?",
+        name: "employee",
+      },
+    ])
+    .then((res) => {
+      console.log(res.employee);
+
+      const query = connection.query(
+        "DELETE FROM employee WHERE ?",
+        {
+          id: res.employee,
+        },
+        (err, res) => {
+          if (err) throw err;
+          addEmployee();
         }
       );
     });
