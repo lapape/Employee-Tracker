@@ -364,7 +364,6 @@ const addRole = () => {
       },
     ])
     .then((res) => {
-      console.log(res);
       const query = connection.query(
         "INSERT INTO role SET ?",
         {
