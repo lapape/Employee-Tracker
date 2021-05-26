@@ -23,11 +23,10 @@ function menu() {
         "View all employees",
         "View all employees by department",
         "View all employees by role",
-        // "View all employees by manager",
         "Add employee",
-        "Remove employee",
+        "Add role",
+        "Add department",
         "Update employee role",
-        "Update employee manager",
         "exit",
       ],
       name: "choice",
@@ -46,24 +45,22 @@ function menu() {
           getRole();
           break;
         }
-        // case "View all employees by manager": {
-        //   getManager();
-        //   break;
-        // }
+
         case "Add employee": {
-          getManagers();
+          addEmployee();
           break;
         }
-        case "Remove employee": {
-          getManagers();
+        case "Add role": {
+          addRole();
           break;
         }
+        case "Add department": {
+          addDepartment();
+          break;
+        }
+
         case "Update employee role": {
-          getManagers();
-          break;
-        }
-        case "Update employee manager": {
-          getManagers();
+          updateRole();
           break;
         }
 
@@ -308,19 +305,7 @@ const getRole = () => {
     });
 };
 
-function getManagers() {
-  connection.query("SELECT * FROM employee WHERE role_id = 8", (err, res) => {
-    if (err) throw err;
-    for (let i = 0; i < res.length; i++) {
-      managerArray.push(res[i].first_name);
-    }
-    console.log(managerArray);
-    // Log all results of the SELECT statement
-    addEmployee(managerArray);
-  });
-}
-
-const addEmployee = (managerArray) => {
+const addEmployee = () => {
   inquirer
     .prompt([
       {
@@ -335,24 +320,10 @@ const addEmployee = (managerArray) => {
       },
       {
         type: "rawlist",
-        message: "What is the Employee's role?",
+        message:
+          "What is the Employee's role? (1-Lawyer, 2-Paralegal, 3-Accountant, 4-Secratary, 5-Tech Support, 6-Sales Rep, 7-Sales Intern, 8-Manager) ",
         name: "role",
-        choices: [
-          "Lawyer",
-          "Paralegal",
-          "Accountant",
-          "Secratary",
-          "Tech Support",
-          "Sales Rep",
-          "Sales Intern",
-          "Manager",
-        ],
-      },
-      {
-        type: "rawlist",
-        message: "Who is the Employee's Manager?",
-        name: "manager",
-        choices: managerArray,
+        choices: [1, 2, 3, 4, 5, 6, 7, 8],
       },
     ])
     .then((res) => {
@@ -363,11 +334,74 @@ const addEmployee = (managerArray) => {
           first_name: res.firstName,
           last_name: res.lastName,
           role_id: Number(res.role),
-          manager_id: Number(res.manager),
         },
         (err, res) => {
           if (err) throw err;
-          console.log(res);
+          console.log("New employee added!");
+          menu();
+        }
+      );
+    });
+};
+
+const addRole = () => {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "What is the title of the role?",
+        name: "title",
+      },
+      {
+        type: "input",
+        message: "What is the yearly salary for the role?",
+        name: "salary",
+      },
+      {
+        type: "list",
+        message:
+          "What department is this role part of? (1-Legal, 2-Finance, 3-IT, 4-Sales, 5-Management",
+        name: "department",
+        choices: [1, 2, 3, 4, 5],
+      },
+    ])
+    .then((res) => {
+      console.log(res);
+      const query = connection.query(
+        "INSERT INTO role SET ?",
+        {
+          title: res.title,
+          salary: res.salary,
+          department_id: Number(res.department),
+        },
+        (err, res) => {
+          if (err) throw err;
+          console.log("New role added!");
+          menu();
+        }
+      );
+    });
+};
+
+const addDepartment = () => {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "What is the name of the department?",
+        name: "name",
+      },
+    ])
+    .then((res) => {
+      console.log(res);
+      const query = connection.query(
+        "INSERT INTO department SET ?",
+        {
+          name: res.name,
+        },
+        (err, res) => {
+          if (err) throw err;
+          console.log("New department added!");
           menu();
         }
       );
